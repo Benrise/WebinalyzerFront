@@ -15,7 +15,13 @@
           <slot name="content" />
         </TabsContent>
       </Tabs>
-      <div v-if="!tabs && title" class="text-2xl font-medium">{{ title }}</div>
+      <div v-if="!tabs && title" class="flex flex-col w-full gap-6">
+        <div class="content-section__tabs-header">
+          <div class="text-2xl font-medium">{{ title }}</div>
+          <slot name="actions" />
+        </div>
+        <slot name="content" />
+      </div>
     </div>
   </div>
 </template>
@@ -33,7 +39,7 @@ const props = defineProps({
   tabs: {
     type: Array as () => ITabsConfig[],
     default: null
-  }
+  },
 })
 
 const defaultTab = props.tabs && props.tabs[0].value;
@@ -48,6 +54,7 @@ const defaultTab = props.tabs && props.tabs[0].value;
   padding: 24px;
   height: 100%;
 
+  &__actions-header,
   &__tabs-header {
     display: flex;
     flex-direction: row;
