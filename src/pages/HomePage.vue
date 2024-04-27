@@ -35,6 +35,8 @@ import TheUploadDrawer from "@/components/TheUploadDrawer.vue";
 
 import IconPlus from '~icons/heroicons/plus-16-solid';
 import IconSearch from '~icons/radix-icons/magnifying-glass';
+import { onMounted } from "vue";
+import { useLessonsStore } from "@/store/lessons";
 
 const title1 = "Данные";
 const title2 = "Сводная информация";
@@ -52,9 +54,15 @@ const tabs: ITabsConfig[] = [
   },
 ];
 
-const files = [{
-  id: "321816",
-}]
+const lessonStore = useLessonsStore();
+
+onMounted(() => {
+  lessonStore.fetchLessons();
+});
+
+const files = lessonStore.files
+
+
 </script>
 
 <style lang="scss" scoped>
