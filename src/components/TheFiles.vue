@@ -1,6 +1,6 @@
 <template>
     <div class="files">
-        <div v-if="!props.isFetching" class="files__container">
+        <div v-if="!isFetching" class="files__container">
           <Toggle :pressed="isSelected(lesson)" @click="selectLesson(lesson)" v-for="(lesson, index) in props.lessons" class="files__item" :key="index">
             <IconFile/>
             <div class="text-m font-normal">{{ lesson }}</div>
@@ -20,16 +20,16 @@ import BaseSkeleton from '@/components/BaseSkeleton.vue'
 import IconClock from '~icons/heroicons/clock';
 
 import { useLessonsStore } from "@/store/lessons";
+import { computed } from 'vue';
+
+const lessonsStore = useLessonsStore()
+const isFetching = computed(() => lessonsStore.isFetching)
 
 interface LessonsProps {
   lessons: string[],
-  isFetching: boolean,
 }
 
 const props = defineProps<LessonsProps>()
-
-const lessonsStore = useLessonsStore()
-
 
 const selectLesson = (lesson: string) => {
   lessonsStore.setSelectedLesson(lesson)

@@ -14,7 +14,7 @@
           <IconSearch class="size-6 text-muted-foreground"/>
         </span>
       </div>
-      <TheFiles :lessons="lessons" :is-fetching="isFetching"/>
+      <TheFiles :lessons="lessons"/>
     </template>
   </ContentSection>
   <div class="flex flex-col gap-5">
@@ -36,11 +36,13 @@ import TheUploadDrawer from "@/components/TheUploadDrawer.vue";
 import IconPlus from '~icons/heroicons/plus-16-solid';
 import IconSearch from '~icons/radix-icons/magnifying-glass';
 
-import { computed, onMounted } from "vue";
+import { computed, onMounted, watch } from "vue";
 
 import { useLessonsStore } from "@/store/lessons";
+import { useGraphsStore } from "@/store/graphs";
 
 const lessonsStore = useLessonsStore();
+const graphsStore = useGraphsStore();
 
 const title1 = "Данные";
 const title2 = "Сводная информация";
@@ -64,14 +66,16 @@ const tabs: ITabsConfig[] = [
 ];
 
 onMounted(() => {
-  lessonsStore.fetchLessons();
+  lessonsStore.fetchLessons()
 });
 
 const lessons = computed(() => lessonsStore.lessons)
 
-const isFetching = computed(() => lessonsStore.isFetching)
-
-
+watch(() => lessonsStore.selectedLesson, (selectedLesson) => {
+  if (selectedLesson) {
+    graphsStore.fetchGraphs(selectedLesson);
+  }
+});
 
 </script>
 

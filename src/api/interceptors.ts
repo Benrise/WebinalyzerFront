@@ -1,5 +1,8 @@
 import axiosInstance from "./axios"
 import { type InternalAxiosRequestConfig, type AxiosResponse, AxiosError } from "axios"
+import { useToast } from '@/shared/ui/toast/use-toast'
+
+const { toast } = useToast();
 
 axiosInstance.interceptors.request.use(
     (config): InternalAxiosRequestConfig => {
@@ -17,7 +20,8 @@ axiosInstance.interceptors.response.use(
      *  Success response
      * 
      */
-    async (response): Promise<AxiosResponse> => {  
+    async (response): Promise<AxiosResponse> => { 
+
       return Promise.resolve(response);
     },
   
@@ -27,6 +31,15 @@ axiosInstance.interceptors.response.use(
      * 
      */
     async (error: AxiosError) => {
+      const statusCode = error.response?.status;
+      console.error(error);
+      const { message } = error.response?.data as { message?: string };
+      if (statusCode && statusCode >= 500) {
+          toast({
+            title: `${statusCode} - сервер недоступен`,
+            description: 'Сервер по техническим причинам временно не может обрабатывать запросы',
+          });
+      }
       Promise.reject(error);
     },
   );

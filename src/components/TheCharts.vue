@@ -1,993 +1,165 @@
 <template>
-    <div class="charts">
-        <div class="charts__container">
-            <div class="charts__item">
+    <div class="graphs">
+        <div v-show="!isFetching" class="graphs__container">
+            <div class="graphs__item">
                 <div><canvas id="msg_length"></canvas></div>
             </div>
-            <div class="charts__item">
+            <div class="graphs__item">
                 <div><canvas id="msg_count"></canvas></div>
             </div>
-            <div class="charts__item">
+            <div class="graphs__item">
                 <div><canvas id="msg_length_time"></canvas></div>
             </div>
+        </div>
+        <div v-if="isFetching" class="graphs__container">
+            <BaseSkeleton v-for="i in 4" :key="i" type="graphs"/>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import Chart from 'chart.js/auto';
-import { onMounted } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
+import { useGraphsStore } from "@/store/graphs";
+import { useLessonsStore } from "@/store/lessons";
 
-const props = defineProps({
-})
-const response = {
-    id: 321816,
-    msg_length: {
-        321816: {
-            total_messages: 264,
-            min_length: 2,
-            max_length: 97,
-            average_length: 20.674242424242426,
-            hist: [
-                7,
-                6,
-                22,
-                9,
-                13,
-                9,
-                12,
-                3,
-                9,
-                43,
-                48,
-                16,
-                9,
-                15,
-                24,
-                10,
-                5,
-                19,
-                3,
-                7,
-                27,
-                33,
-                62,
-                13,
-                28,
-                10,
-                45,
-                8,
-                16,
-                22,
-                17,
-                36,
-                4,
-                10,
-                10,
-                7,
-                23,
-                30,
-                27,
-                19,
-                4,
-                23,
-                14,
-                14,
-                18,
-                11,
-                39,
-                12,
-                26,
-                30,
-                11,
-                32,
-                16,
-                32,
-                8,
-                4,
-                5,
-                33,
-                56,
-                21,
-                24,
-                8,
-                13,
-                9,
-                2,
-                5,
-                9,
-                11,
-                7,
-                24,
-                16,
-                34,
-                51,
-                69,
-                6,
-                3,
-                5,
-                28,
-                6,
-                10,
-                16,
-                9,
-                10,
-                17,
-                38,
-                14,
-                2,
-                38,
-                43,
-                23,
-                91,
-                7,
-                7,
-                5,
-                4,
-                7,
-                22,
-                16,
-                27,
-                8,
-                3,
-                14,
-                17,
-                27,
-                23,
-                22,
-                57,
-                8,
-                22,
-                46,
-                24,
-                43,
-                23,
-                12,
-                24,
-                14,
-                70,
-                23,
-                3,
-                17,
-                16,
-                25,
-                2,
-                13,
-                19,
-                30,
-                48,
-                52,
-                56,
-                22,
-                34,
-                46,
-                21,
-                24,
-                30,
-                10,
-                10,
-                19,
-                26,
-                3,
-                11,
-                3,
-                16,
-                38,
-                28,
-                28,
-                49,
-                31,
-                10,
-                10,
-                24,
-                17,
-                5,
-                19,
-                16,
-                6,
-                19,
-                15,
-                34,
-                8,
-                33,
-                19,
-                34,
-                13,
-                17,
-                15,
-                9,
-                6,
-                25,
-                18,
-                18,
-                8,
-                13,
-                13,
-                18,
-                11,
-                35,
-                14,
-                29,
-                6,
-                9,
-                9,
-                8,
-                21,
-                11,
-                7,
-                10,
-                16,
-                12,
-                18,
-                7,
-                7,
-                31,
-                17,
-                97,
-                38,
-                8,
-                9,
-                18,
-                3,
-                8,
-                69,
-                15,
-                3,
-                13,
-                4,
-                21,
-                5,
-                33,
-                18,
-                24,
-                16,
-                12,
-                28,
-                11,
-                50,
-                58,
-                23,
-                43,
-                13,
-                34,
-                12,
-                11,
-                25,
-                37,
-                20,
-                78,
-                31,
-                41,
-                24,
-                7,
-                23,
-                6,
-                12,
-                17,
-                18,
-                25,
-                13,
-                7,
-                40,
-                15,
-                14,
-                37,
-                4,
-                20,
-                24,
-                28,
-                29,
-                20,
-                4,
-                11,
-                24,
-                13,
-                8,
-                20,
-                11,
-                29,
-                10,
-                37,
-                31,
-                38,
-                36,
-                32,
-                31
-            ]
-        }
-    },
-    msg_count: {
-        321816: {
-            0.0: 25,
-            10.0: 34,
-            20.0: 31,
-            30.0: 36,
-            40.0: 14,
-            50.0: 39,
-            60.0: 20,
-            70.0: 29,
-            80.0: 21,
-            90.0: 15
-        }
-    },
-    msg_length_time: {
-        321816: {
-            minutes_since_start: [
-                4.566666666666666,
-                4.633333333333334,
-                4.7,
-                4.75,
-                5.383333333333334,
-                5.466666666666667,
-                5.516666666666667,
-                5.7,
-                5.816666666666666,
-                6.266666666666667,
-                6.35,
-                6.616666666666666,
-                6.733333333333333,
-                6.9,
-                7.233333333333333,
-                7.416666666666667,
-                7.533333333333333,
-                7.583333333333333,
-                7.666666666666667,
-                7.75,
-                7.983333333333333,
-                8.333333333333334,
-                8.633333333333333,
-                8.883333333333333,
-                9.783333333333333,
-                10.266666666666667,
-                10.916666666666666,
-                11.083333333333334,
-                11.166666666666666,
-                11.216666666666667,
-                11.333333333333334,
-                11.5,
-                11.666666666666666,
-                12.2,
-                12.483333333333333,
-                12.55,
-                12.933333333333334,
-                13.033333333333333,
-                13.216666666666667,
-                13.216666666666667,
-                13.233333333333333,
-                13.25,
-                13.266666666666667,
-                13.516666666666667,
-                13.7,
-                13.833333333333334,
-                15.25,
-                15.3,
-                16.766666666666666,
-                17.466666666666665,
-                17.766666666666666,
-                17.783333333333335,
-                17.983333333333334,
-                18.05,
-                18.116666666666667,
-                18.2,
-                18.25,
-                18.85,
-                19.066666666666666,
-                20.066666666666666,
-                20.416666666666668,
-                20.5,
-                20.75,
-                21.016666666666666,
-                21.066666666666666,
-                21.166666666666668,
-                21.3,
-                21.933333333333334,
-                21.966666666666665,
-                22.716666666666665,
-                22.833333333333332,
-                22.983333333333334,
-                23.35,
-                23.516666666666666,
-                24.816666666666666,
-                24.916666666666668,
-                24.933333333333334,
-                24.966666666666665,
-                25.066666666666666,
-                25.15,
-                25.266666666666666,
-                25.416666666666668,
-                25.416666666666668,
-                25.416666666666668,
-                26.133333333333333,
-                26.3,
-                27,
-                27.033333333333335,
-                27.083333333333332,
-                28.55,
-                32.166666666666664,
-                32.18333333333333,
-                32.2,
-                32.266666666666666,
-                32.3,
-                32.36666666666667,
-                32.68333333333333,
-                32.8,
-                33,
-                33.05,
-                33.1,
-                33.2,
-                33.2,
-                33.3,
-                33.416666666666664,
-                33.666666666666664,
-                33.75,
-                33.86666666666667,
-                33.95,
-                35.166666666666664,
-                36.05,
-                36.55,
-                36.8,
-                36.833333333333336,
-                37.2,
-                37.88333333333333,
-                38.46666666666667,
-                38.6,
-                38.63333333333333,
-                38.93333333333333,
-                39.06666666666667,
-                39.15,
-                39.45,
-                39.56666666666667,
-                39.63333333333333,
-                39.93333333333333,
-                45.7,
-                45.95,
-                47.3,
-                47.55,
-                47.6,
-                48.083333333333336,
-                48.083333333333336,
-                48.43333333333333,
-                49.083333333333336,
-                49.266666666666666,
-                49.43333333333333,
-                49.516666666666666,
-                49.833333333333336,
-                49.96666666666667,
-                50.18333333333333,
-                50.25,
-                50.38333333333333,
-                50.38333333333333,
-                50.46666666666667,
-                50.65,
-                50.81666666666667,
-                50.983333333333334,
-                51.13333333333333,
-                51.3,
-                51.5,
-                51.61666666666667,
-                51.666666666666664,
-                51.983333333333334,
-                52.166666666666664,
-                52.28333333333333,
-                53.71666666666667,
-                53.95,
-                54.28333333333333,
-                54.36666666666667,
-                54.71666666666667,
-                54.9,
-                55.36666666666667,
-                55.4,
-                55.7,
-                55.8,
-                55.833333333333336,
-                55.88333333333333,
-                55.916666666666664,
-                56.18333333333333,
-                57.06666666666667,
-                57.18333333333333,
-                57.21666666666667,
-                59.083333333333336,
-                59.333333333333336,
-                59.416666666666664,
-                59.63333333333333,
-                59.7,
-                59.86666666666667,
-                61.88333333333333,
-                61.96666666666667,
-                62.016666666666666,
-                62.05,
-                62.083333333333336,
-                62.13333333333333,
-                62.166666666666664,
-                62.18333333333333,
-                63.6,
-                63.81666666666667,
-                64.2,
-                64.3,
-                64.73333333333333,
-                65.8,
-                67.26666666666667,
-                69.6,
-                69.65,
-                69.8,
-                69.9,
-                69.91666666666667,
-                70,
-                70.11666666666666,
-                70.2,
-                70.33333333333333,
-                70.4,
-                70.58333333333333,
-                70.63333333333334,
-                71.93333333333334,
-                72.1,
-                72.61666666666666,
-                72.7,
-                73.58333333333333,
-                73.78333333333333,
-                74.45,
-                74.53333333333333,
-                74.93333333333334,
-                75.56666666666666,
-                76.53333333333333,
-                76.68333333333334,
-                77.31666666666666,
-                77.68333333333334,
-                77.81666666666666,
-                77.81666666666666,
-                77.96666666666667,
-                78.01666666666667,
-                78.15,
-                78.5,
-                79.41666666666667,
-                79.85,
-                80.25,
-                80.6,
-                82.28333333333333,
-                82.55,
-                82.9,
-                83.06666666666666,
-                83.65,
-                83.78333333333333,
-                84.58333333333333,
-                84.8,
-                84.9,
-                85.91666666666667,
-                86.1,
-                86.81666666666666,
-                87.05,
-                87.18333333333334,
-                88.01666666666667,
-                88.45,
-                89.18333333333334,
-                89.36666666666666,
-                89.9,
-                90.28333333333333,
-                91.56666666666666,
-                91.58333333333333,
-                91.7,
-                91.7,
-                91.81666666666666,
-                91.85,
-                92.03333333333333,
-                92.58333333333333,
-                92.85,
-                92.88333333333334,
-                92.91666666666667,
-                92.93333333333334,
-                92.93333333333334,
-                92.98333333333333
-            ],
-            message_lengths: [
-                7,
-                6,
-                22,
-                9,
-                13,
-                9,
-                12,
-                3,
-                9,
-                43,
-                48,
-                16,
-                9,
-                15,
-                24,
-                10,
-                5,
-                19,
-                3,
-                7,
-                27,
-                33,
-                62,
-                13,
-                28,
-                10,
-                45,
-                8,
-                16,
-                22,
-                17,
-                36,
-                4,
-                10,
-                10,
-                7,
-                23,
-                30,
-                27,
-                19,
-                4,
-                23,
-                14,
-                14,
-                18,
-                11,
-                39,
-                12,
-                26,
-                30,
-                11,
-                32,
-                16,
-                32,
-                8,
-                4,
-                5,
-                33,
-                56,
-                21,
-                24,
-                8,
-                13,
-                9,
-                2,
-                5,
-                9,
-                11,
-                7,
-                24,
-                16,
-                34,
-                51,
-                69,
-                6,
-                3,
-                5,
-                28,
-                6,
-                10,
-                16,
-                9,
-                10,
-                17,
-                38,
-                14,
-                2,
-                38,
-                43,
-                23,
-                91,
-                7,
-                7,
-                5,
-                4,
-                7,
-                22,
-                16,
-                27,
-                8,
-                3,
-                14,
-                17,
-                27,
-                23,
-                22,
-                57,
-                8,
-                22,
-                46,
-                24,
-                43,
-                23,
-                12,
-                24,
-                14,
-                70,
-                23,
-                3,
-                17,
-                16,
-                25,
-                2,
-                13,
-                19,
-                30,
-                48,
-                52,
-                56,
-                22,
-                34,
-                46,
-                21,
-                24,
-                30,
-                10,
-                10,
-                19,
-                26,
-                3,
-                11,
-                3,
-                16,
-                38,
-                28,
-                28,
-                49,
-                31,
-                10,
-                10,
-                24,
-                17,
-                5,
-                19,
-                16,
-                6,
-                19,
-                15,
-                34,
-                8,
-                33,
-                19,
-                34,
-                13,
-                17,
-                15,
-                9,
-                6,
-                25,
-                18,
-                18,
-                8,
-                13,
-                13,
-                18,
-                11,
-                35,
-                14,
-                29,
-                6,
-                9,
-                9,
-                8,
-                21,
-                11,
-                7,
-                10,
-                16,
-                12,
-                18,
-                7,
-                7,
-                31,
-                17,
-                97,
-                38,
-                8,
-                9,
-                18,
-                3,
-                8,
-                69,
-                15,
-                3,
-                13,
-                4,
-                21,
-                5,
-                33,
-                18,
-                24,
-                16,
-                12,
-                28,
-                11,
-                50,
-                58,
-                23,
-                43,
-                13,
-                34,
-                12,
-                11,
-                25,
-                37,
-                20,
-                78,
-                31,
-                41,
-                24,
-                7,
-                23,
-                6,
-                12,
-                17,
-                18,
-                25,
-                13,
-                7,
-                40,
-                15,
-                14,
-                37,
-                4,
-                20,
-                24,
-                28,
-                29,
-                20,
-                4,
-                11,
-                24,
-                13,
-                8,
-                20,
-                11,
-                29,
-                10,
-                37,
-                31,
-                38,
-                36,
-                32,
-                31
-            ]
-        }
-    }
-}
+import BaseSkeleton from '@/components/BaseSkeleton.vue'
+import { isEmptyObject } from '@/shared/lib/utils';
 
-const msg_length = response.msg_length[321816]
-const msg_count = response.msg_count[321816]
-const msg_length_time = response.msg_length_time[321816]
+const graphsStore = useGraphsStore()
+const lessonsStore = useLessonsStore()
+
+const isFetching = computed(() => graphsStore.isFetching)
+
+const msgLength = ref<any>(null);
+const msgCount = ref<any>(null);
+const msgLengthTime = ref<any>(null);
+
+let ctxMsgCount: any;
+let ctxMsgLength: any;
+let ctxMsgLengthTime: any;
 
 onMounted(() => {
-    const ctx_msg_count = document.getElementById('msg_count') as HTMLCanvasElement
-    const ctx_msg_length = document.getElementById('msg_length') as HTMLCanvasElement
-    const ctx_msg_length_time = document.getElementById('msg_length_time') as HTMLCanvasElement
-    
-    const chart_msg_length = new Chart(ctx_msg_length, {
-        type: "scatter",
-        data: {
-            datasets: [
-                {
-                    label: "Длина сообщения",
-                    data: msg_length.hist.map((value, index) => ({ x: index, y: value })),
-                    backgroundColor: 'rgb(255,165,0)'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                title: {
-                    display: true,
-                    text: "Распределенье длины сообщений после распределения",
-                },
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Длина сообщения',
-                        padding: {top: 10, left: 0, right: 0, bottom: 0}
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Частота',
-                        padding: {top: 0, left: 0, right: 0, bottom: 10}
-                    }
-                }
-            }
-        },
-    })
+    ctxMsgCount = document.getElementById('msg_count') as HTMLCanvasElement;
+    ctxMsgLength = document.getElementById('msg_length') as HTMLCanvasElement;
+    ctxMsgLengthTime = document.getElementById('msg_length_time') as HTMLCanvasElement;
+});
 
-    const chart_msg_count = new Chart(ctx_msg_count, {
-        type: 'bar',
-        data: {
-            datasets: [
-                {
-                    label: 'Длина сообщения в зависимости от длительности урока',
-                    data: msg_count,
-                    backgroundColor: 'rgb(160,32,240)'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                title: {
-                    display: true,
-                    text: 'Длина сообщений в зависимости от времени с начала урока'
-                }
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Минуты с начала урока',
-                        padding: {top: 10, left: 0, right: 0, bottom: 0}
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Длина сообщения',
-                        padding: {top: 0, left: 0, right: 0, bottom: 10}
-                    }
-                }
-            }
-        },
-    })
+watch(() => graphsStore.currentGraphs, (newGraphs) => {
+      if (newGraphs) {
+        const integerSelectedLesson = parseInt(lessonsStore.selectedLesson);
+        msgLength.value = newGraphs.msg_length ? newGraphs.msg_length[integerSelectedLesson] : null;
+        msgCount.value = newGraphs.msg_count ? newGraphs.msg_count[integerSelectedLesson] : null;
+        msgLengthTime.value = newGraphs.msg_length_time ? newGraphs.msg_length_time[integerSelectedLesson] : null;
 
-    const chart_msg_length_time = new Chart(ctx_msg_length_time, {
-        type: 'bubble',
-        data: {
-            datasets: [
-                {
-                    data: msg_length_time.minutes_since_start.map((x, index) => ({
-                        x: x,
-                        y: msg_length_time.message_lengths[index],
-                        r: 5
-                    })),
-                    backgroundColor: 'rgb(255, 99, 132)'
-                }],
-        },
-        options: {
+        const normalCount = [msgLength.value, msgCount.value, msgLengthTime.value].filter(value => value !== null && !isEmptyObject(value)).length;
+        graphsStore.setActiveGraphsCount(normalCount);
+        updateCharts();
+      }
+});
+
+let chartMsgLength: Chart
+let chartMsgCount: Chart
+let chartMsgLengthTime: Chart
+
+
+const updateCharts = () => {
+    if (chartMsgLength) {
+        chartMsgLength.destroy();
+    }
+
+    if (chartMsgCount) {
+        chartMsgCount.destroy();
+    }
+
+    if (chartMsgLengthTime) {
+        chartMsgLengthTime.destroy();
+    }
+
+    if (msgLength.value) {
+        chartMsgLength = new Chart(ctxMsgLength, {
+            type: 'scatter',
+            data: {
+            datasets: [{
+                label: 'Длина сообщения',
+                data: msgLength.value.hist.map((value: number, index: number) => ({ x: index, y: value })),
+                backgroundColor: 'rgb(255,165,0)'
+            }]
+            },
+            options: {
             responsive: true,
             plugins: {
-                legend: {
-                    display: false
-                },
-                title: {
-                    display: true,
-                    text: "Распределенье длины сообщений после распределения",
-                },
+                legend: { display: false },
+                title: { display: true, text: 'Распределение длины сообщений после распределения' },
             },
             scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Минуты с начала урока',
-                        padding: {top: 10, left: 0, right: 0, bottom: 0}
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Длина сообщения',
-                        padding: {top: 0, left: 0, right: 0, bottom: 10}
-                    }
-                }
+                x: { title: { display: true, text: 'Длина сообщения', padding: { top: 10, left: 0, right: 0, bottom: 0 } } },
+                y: { title: { display: true, text: 'Частота', padding: { top: 0, left: 0, right: 0, bottom: 10 } } }
             }
-        },
-    })
-})
+            }
+        });
+
+    }
+
+    if (msgCount.value) {
+        chartMsgCount = new Chart(ctxMsgCount, {
+            type: 'bar',
+            data: {
+            datasets: [{
+                label: 'Длина сообщения в зависимости от длительности урока',
+                data: msgCount.value,
+                backgroundColor: 'rgb(160,32,240)'
+            }]
+            },
+            options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: 'Длина сообщений в зависимости от времени с начала урока' }
+            },
+            scales: {
+                x: { title: { display: true, text: 'Минуты с начала урока', padding: { top: 10, left: 0, right: 0, bottom: 0 } } },
+                y: { title: { display: true, text: 'Длина сообщения', padding: { top: 0, left: 0, right: 0, bottom: 10 } } }
+            }
+            }
+        });
+    }
+
+    if (msgLengthTime.value) {
+        chartMsgLengthTime = new Chart(ctxMsgLengthTime, {
+            type: 'bubble',
+            data: {
+            datasets: [{
+                data: msgLengthTime.value.minutes_since_start.map((x: number, index: number) => ({
+                x: x,
+                y: msgLengthTime.value.message_lengths[index],
+                r: 5
+                })),
+                backgroundColor: 'rgb(255, 99, 132)'
+            }]
+            },
+            options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: 'Распределение длины сообщений после распределения' },
+            },
+            scales: {
+                x: { title: { display: true, text: 'Минуты с начала урока', padding: { top: 10, left: 0, right: 0, bottom: 0 } } },
+                y: { title: { display: true, text: 'Длина сообщения', padding: { top: 0, left: 0, right: 0, bottom: 10 } } }
+            }
+            }
+        });
+    }
+
+};
+
 </script>
 
 <style scoped lang="scss">
 
-.charts {
+.graphs {
     &__container {
         display: grid;
         grid-template-columns: repeat(2, 1fr);

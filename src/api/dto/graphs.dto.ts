@@ -1,4 +1,4 @@
-export class ChartsDto {
+export class GraphsDto {
     id: string = '';
     msg_length?: {
         [id: number]: {

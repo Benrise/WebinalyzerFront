@@ -13,3 +13,12 @@ export function valueUpdater<T extends Updater<any>>(updaterOrValue: T, ref: Ref
       ? updaterOrValue(ref.value)
       : updaterOrValue
 }
+
+export function deepEqual<T>(obj1: T, obj2: T): boolean{
+  return JSON.stringify(obj1)===JSON.stringify(obj2);
+}
+
+export const isEmptyObject = (obj: any) => {
+  if (!obj) return true;
+  return Object.keys(obj).length === 0;
+};

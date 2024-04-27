@@ -9,6 +9,10 @@
               </div>
         </div>
 
+        <div v-if="props.type === 'graphs'" class="skeleton__graphs">
+            <Skeleton class="w-full h-full" />
+        </div>
+
     </div>
 </template>
 
@@ -16,7 +20,7 @@
 import { Skeleton } from '@/shared/ui/skeleton'
 
 interface SkeletonProps {
-    type: 'lessons' | 'charts',
+    type: 'lessons' | 'graphs',
 }
 
 const props = defineProps<SkeletonProps>()
@@ -29,6 +33,11 @@ const props = defineProps<SkeletonProps>()
       display: flex;
       flex-direction: column;
       gap: 24px;
+  }
+
+  &__graphs {
+    width: 100%;
+    height: 400px;
   }
 
   &__lessons-items {
