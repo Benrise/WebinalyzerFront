@@ -10,34 +10,66 @@
 import { onMounted, ref } from 'vue';
 import Chart from 'chart.js/auto';
 
-const comparison = ref<HTMLCanvasElement | null>(null)
-let chartMsgLength: Chart
+const ctx = ref<HTMLCanvasElement | null>(null)
+let chart: Chart
 
 onMounted(() => {
-    if (comparison.value) {
-        chartMsgLength = new Chart(comparison.value, {
-            type: 'scatter',
+
+    ctx.value = document.getElementById('comparison') as HTMLCanvasElement;
+
+    if (ctx.value) {
+        chart = new Chart(ctx.value, {
+            type: 'radar',
             data: {
                 datasets: [
                     {
-                    label: 'Dataset 1',
+                    label: 'Файл 307751',
                     data: [5, 15, 20, 30, 40, 50, 60],
                     borderColor: 'red',
                     backgroundColor: 'rgba(255, 0, 0, 0.5)',
                     },
                     {
-                    label: 'Dataset 2',
+                    label: 'Файл 307751',
                     data: [10, 25, 35, 45, 55, 65, 70],
                     borderColor: 'blue',
                     backgroundColor: 'rgba(0, 0, 255, 0.5)',
                     }
-                ]
+                ],
+                labels: [
+                    'Токсичность',
+                    'Технические неполадки',
+                    'Активность',
+                    'Удовлетворенность',
+                    'Кол-во сообщений',
+                    'Интерес',
+                    'Длительность урока',
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                title: {
+                    display: true,
+                    text: 'Сравнительный анализ'
+                }
+                }
             },
         });
     }
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
+.comparison {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &__graph {
+        width: 60%;
+    }
+}
+
 
 </style>

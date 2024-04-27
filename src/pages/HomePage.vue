@@ -46,17 +46,17 @@ const lessonsStore = useLessonsStore();
 const graphsStore = useGraphsStore();
 
 const title1 = "Данные";
-const title2 = "Сводная информация";
+const title2 = "Дашборд";
 
 const tabs: ITabsConfig[] = [
   {
     value: "community",
-    title: "Дашборд",
+    title: "Инфографика",
     content: TheCharts,
   },
   {
     value: "recommendations",
-    title: "Логи",
+    title: "Сводка",
     content: {},
   },
   {
@@ -81,9 +81,4 @@ watch(() => lessonsStore.selectedLesson, (selectedLesson) => {
 </script>
 
 <style lang="scss" scoped>
-.features {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-}
 </style>

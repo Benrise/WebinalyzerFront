@@ -10,6 +10,9 @@
             <div class="graphs__item">
                 <div><canvas id="msg_length_time" ref="msg_length_time"></canvas></div>
             </div>
+            <div class="graphs__item">
+                
+            </div>
         </div>
         <div v-if="isFetching" class="graphs__container">
             <BaseSkeleton v-for="i in 4" :key="i" type="graphs"/>

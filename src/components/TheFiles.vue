@@ -5,6 +5,7 @@
             <IconFile/>
             <div class="text-m font-normal">{{ lesson }}</div>
             <IconClock class="text-amber-500"/>
+            
           </Toggle>
         </div>
         <BaseSkeleton v-else type="lessons"></BaseSkeleton>
