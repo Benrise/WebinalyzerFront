@@ -12,7 +12,6 @@
         </div>
         <TabsContent v-for="tab in tabs" :key="tab.value" :value="tab.value">
           <component :key="tab.value" :is="tab.content" />
-          <slot name="content" />
         </TabsContent>
       </Tabs>
       <div v-if="!tabs && title" class="flex flex-col w-full gap-6">

@@ -1,7 +1,11 @@
 <template>
   <ContentSection :title="title1">
     <template #actions>
-      <Button size="sm"><IconPlus/></Button>
+      <TheUploadDrawer>
+        <template #trigger>
+          <Button size="sm"><IconPlus/></Button>
+        </template>
+      </TheUploadDrawer>
     </template>
     <template #content>
       <div class="relative w-full max-w-sm items-center">
@@ -10,6 +14,7 @@
           <IconSearch class="size-6 text-muted-foreground"/>
         </span>
       </div>
+      <TheFiles :files="files"/>
     </template>
   </ContentSection>
   <div class="flex flex-col gap-5">
@@ -24,6 +29,10 @@ import type { ITabsConfig } from "@/shared/ui/tabs";
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 
+import TheCharts from '@/components/TheCharts.vue'
+import TheFiles from '@/components/TheFiles.vue'
+import TheUploadDrawer from "@/components/TheUploadDrawer.vue";
+
 import IconPlus from '~icons/heroicons/plus-16-solid';
 import IconSearch from '~icons/radix-icons/magnifying-glass';
 
@@ -34,7 +43,7 @@ const tabs: ITabsConfig[] = [
   {
     value: "community",
     title: "Дашборд",
-    content: {},
+    content: TheCharts,
   },
   {
     value: "recommendations",
@@ -42,6 +51,10 @@ const tabs: ITabsConfig[] = [
     content: {},
   },
 ];
+
+const files = [{
+  id: "321816",
+}]
 </script>
 
 <style lang="scss" scoped>
