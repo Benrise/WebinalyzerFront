@@ -14,7 +14,7 @@
           <IconSearch class="size-6 text-muted-foreground"/>
         </span>
       </div>
-      <TheFiles :files="files"/>
+      <TheFiles :lessons="lessons" :is-fetching="isFetching"/>
     </template>
   </ContentSection>
   <div class="flex flex-col gap-5">
@@ -35,8 +35,12 @@ import TheUploadDrawer from "@/components/TheUploadDrawer.vue";
 
 import IconPlus from '~icons/heroicons/plus-16-solid';
 import IconSearch from '~icons/radix-icons/magnifying-glass';
-import { onMounted } from "vue";
+
+import { computed, onMounted } from "vue";
+
 import { useLessonsStore } from "@/store/lessons";
+
+const lessonsStore = useLessonsStore();
 
 const title1 = "Данные";
 const title2 = "Сводная информация";
@@ -52,15 +56,21 @@ const tabs: ITabsConfig[] = [
     title: "Логи",
     content: {},
   },
+  {
+    value: "comparison",
+    title: "Сравненительный анализ",
+    content: {},
+  },
 ];
 
-const lessonStore = useLessonsStore();
-
 onMounted(() => {
-  lessonStore.fetchLessons();
+  lessonsStore.fetchLessons();
 });
 
-const files = lessonStore.files
+const lessons = computed(() => lessonsStore.lessons)
+
+const isFetching = computed(() => lessonsStore.isFetching)
+
 
 
 </script>

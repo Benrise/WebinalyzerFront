@@ -1,21 +1,31 @@
-import { LessonsDto } from '@/api/dto';
 import http from '@/api/http';
 import { defineStore } from 'pinia';
 
 export const useLessonsStore = defineStore('lesson', {
   state: () => ({
-    files: [] as LessonsDto[],
+    lessons: [] as string[],
+    isFetching: false,
+    selectedLesson: '' as string,
   }),
   actions: {
     async fetchLessons() {
       try {
-        const files = await http.lessons.get();
-        console.log(files)
-        this.files = files;
+        this.isFetching = true;
+        const lessons = await http.lessons.get();
+        this.lessons = lessons.data.slice(0, 100);
+        if (!this.selectedLesson) {
+          this.selectedLesson = this.lessons[0];
+        }
       } catch (error) {
         console.error('Error fetching lessons:', error);
         throw error;
       }
+      finally {
+        this.isFetching = false;
+      }
     },
+    setSelectedLesson(lesson: string) {
+      this.selectedLesson = lesson
+    }
   },
 });

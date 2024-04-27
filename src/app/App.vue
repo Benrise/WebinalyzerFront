@@ -20,7 +20,7 @@ provide(EAppProviders.AppPages, AppPages);
 useAppStore();
 </script>
 
-<style scoped>
+<style>
 @import "./styles/index.scss";
 @import "./styles/animations.scss";
 </style>

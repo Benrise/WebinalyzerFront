@@ -1,12 +1,13 @@
 <template>
     <div class="files">
-      <div class="files__container">
-        <Toggle v-for="file in props.files" class="files__item" :key="file.id">
-          <IconFile/>
-          <div class="text-lg font-normal">{{ file.id }}</div>
-        </Toggle>
-      </div>
-      
+        <div v-if="!props.isFetching" class="files__container">
+          <Toggle :pressed="isSelected(lesson)" @click="selectLesson(lesson)" v-for="(lesson, index) in props.lessons" class="files__item" :key="index">
+            <IconFile/>
+            <div class="text-m font-normal">{{ lesson }}</div>
+            <IconClock class="text-amber-500"/>
+          </Toggle>
+        </div>
+        <BaseSkeleton v-else type="lessons"></BaseSkeleton>
     </div>
 </template>
 
@@ -14,29 +15,50 @@
 import { Toggle } from '@/shared/ui/toggle'
 import IconFile from '~icons/mdi/file';
 
-interface File {
-  id: string
+import BaseSkeleton from '@/components/BaseSkeleton.vue'
+
+import IconClock from '~icons/heroicons/clock';
+
+import { useLessonsStore } from "@/store/lessons";
+
+interface LessonsProps {
+  lessons: string[],
+  isFetching: boolean,
 }
 
-interface FilesProps {
-  files: File[]
+const props = defineProps<LessonsProps>()
+
+const lessonsStore = useLessonsStore()
+
+
+const selectLesson = (lesson: string) => {
+  lessonsStore.setSelectedLesson(lesson)
 }
 
-const props = defineProps<FilesProps>()
+const isSelected = (lesson: string) => {
+  return (lessonsStore.selectedLesson === lesson)
+}
 </script>
 
 <style lang="scss" scoped>
 
 .files {
+  height: 100%;
+
   &__container {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    max-height: 780px;
+    overflow-y: auto;
+    padding-right: 10px;
   }
   &__item {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    padding: 12px;
+    height: 36px;
   }
 }
 </style>
