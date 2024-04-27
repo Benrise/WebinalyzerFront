@@ -10,7 +10,9 @@
         </div>
 
         <div v-if="props.type === 'graphs'" class="skeleton__graphs">
-            <Skeleton class="w-full h-full" />
+            <div class="skeleton__graphs-loader">
+                <IconLoader class="w-16 h-16 animate-spin text-gray-400"></IconLoader>
+            </div>
         </div>
 
     </div>
@@ -18,6 +20,7 @@
 
 <script setup lang="ts">
 import { Skeleton } from '@/shared/ui/skeleton'
+import IconLoader from '~icons/tabler/loader-2';
 
 interface SkeletonProps {
     type: 'lessons' | 'graphs',
@@ -38,6 +41,14 @@ const props = defineProps<SkeletonProps>()
   &__graphs {
     width: 100%;
     height: 400px;
+  }
+
+  &__graphs-loader {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
   }
 
   &__lessons-items {

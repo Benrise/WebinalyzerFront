@@ -2,25 +2,25 @@
     <div class="graphs">
         <div v-show="!isFetching" class="graphs__container">
             <div class="graphs__item">
-                <div><canvas id="msg_length" ref="msg_length"></canvas></div>
+                <div><canvas id="msg_length" ref="msgLength"></canvas></div>
             </div>
             <div class="graphs__item">
-                <div><canvas id="msg_count" ref="msg_count"></canvas></div>
+                <div><canvas id="msgCount" ref="msg_count"></canvas></div>
             </div>
             <div class="graphs__item">
-                <div><canvas id="msg_length_time" ref="msg_length_time"></canvas></div>
+                <div><canvas id="msg_length_time" ref="msgLengthTime"></canvas></div>
             </div>
             <div class="graphs__item">
                 <div class="graphs__additionals">
                     <AdditionalCard v-for="(card, index) in cardsConfig" 
-                    :key="index" 
-                    :type="card.type" 
-                    :value="card.value" 
-                    :description="card.description"
-                    :backgroundColor="card.backgroundColor"
-                    :secondaryColor="card.secondaryColor"
-                    :mainColor="card.mainColor"
-                    :emotion="card.emotion"
+                        :key="index" 
+                        :type="card.type" 
+                        :value="card.value" 
+                        :description="card.description"
+                        :backgroundColor="card.backgroundColor"
+                        :secondaryColor="card.secondaryColor"
+                        :mainColor="card.mainColor"
+                        :emotion="card.emotion"
                     />
                 </div>
             </div>
@@ -42,7 +42,8 @@ import BaseSkeleton from '@/components/BaseSkeleton.vue'
 import AdditionalCard from '@/components/AdditionalCard.vue';
 import type { CardProps } from '@/components/AdditionalCard.vue';
 
-import { isEmptyObject } from '@/shared/lib/utils';
+import IconPie from '~icons/heroicons/chart-pie-solid';
+
 import type { GraphsDto } from '@/api/dto';
 
 const graphsStore = useGraphsStore()
@@ -52,6 +53,13 @@ const isFetching = computed(() => graphsStore.isFetching)
 const currentGraphs = computed(() => graphsStore.currentGraphs)
 
 const integerSelectedLesson = computed(() => parseInt(lessonsStore.selectedLesson));
+
+const getTotalMessages = (graphs: GraphsDto) => {
+    if (graphs && graphs.msg_length) {
+        return graphs.msg_length[integerSelectedLesson.value].total_messages.toString();
+    }
+    return '?';
+}
 
 const msgLength = ref<any>(null);
 const msgCount = ref<any>(null);
@@ -71,15 +79,17 @@ onMounted(() => {
     ctxMsgLengthTime = document.getElementById('msg_length_time') as HTMLCanvasElement;
 
     updateCharts(currentGraphs.value);
+    updateCardsConfig(currentGraphs.value);
 });
 
 watch(() => currentGraphs.value, (newGraphs) => {
       if (newGraphs) {
         updateCharts(newGraphs);
+        updateCardsConfig(newGraphs);
       }
 });
 
-const updateCharts = (graphs: GraphsDto) => {
+const updateCharts = async (graphs: GraphsDto) => {
     msgLength.value = graphs.msg_length ? graphs.msg_length[integerSelectedLesson.value] : null;
     msgCount.value = graphs.msg_count ? graphs.msg_count[integerSelectedLesson.value] : null;
     msgLengthTime.value = graphs.msg_length_time ? graphs.msg_length_time[integerSelectedLesson.value] : null;
@@ -183,34 +193,39 @@ const updateCharts = (graphs: GraphsDto) => {
     }
 };
 
-const cardsConfig: CardProps[] = [
-    {
-        type: 'message',
-        value: '224',
-        description: 'cообщений всего',
-        backgroundColor: '#ECEDFF',
-        mainColor: '#004DFF',
-        secondaryColor: '#D2D4FF'
-    },
-    {
-        type: 'emotion',
-        value: 'позитивный',
-        description: 'основной сентимент',
-        backgroundColor: '#EEFFE6',
-        mainColor: '#008000',
-        secondaryColor: '#D0FFC0',
-        emotion: 'smile',
-    },
-    {
-        type: 'satisfaction',
-        value: '100%',
-        description: 'удовлетворенность',
-        backgroundColor: '#FBE3FF',
-        mainColor: '#FF00E6',
-        secondaryColor: '#FED2FF',
-    }
-]
+const cardsConfig = ref<CardProps[]>([]);
 
+const updateCardsConfig = (graphs: GraphsDto) => {
+    const totalMessages = getTotalMessages(graphs)
+    const updatedCardsConfig: CardProps[] = [
+        {
+            type: 'message',
+            value: totalMessages,
+            description: 'cообщений всего',
+            backgroundColor: '#ECEDFF',
+            mainColor: '#004DFF',
+            secondaryColor: '#D2D4FF'
+        },
+        {
+            type: 'emotion',
+            value: 'позитивный',
+            description: 'основной сентимент',
+            backgroundColor: '#EEFFE6',
+            mainColor: '#008000',
+            secondaryColor: '#D0FFC0',
+            emotion: 'smile',
+        },
+        {
+            type: 'satisfaction',
+            value: '100%',
+            description: 'удовлетворенность',
+            backgroundColor: '#FBE3FF',
+            mainColor: '#FF00E6',
+            secondaryColor: '#FED2FF',
+        }
+    ]
+    cardsConfig.value = updatedCardsConfig;
+}
 </script>
 
 <style scoped lang="scss">
@@ -225,6 +240,7 @@ const cardsConfig: CardProps[] = [
 
     &__item {
         width: 100%;
+        position: relative;
     }
 
     &__additionals {
@@ -234,5 +250,4 @@ const cardsConfig: CardProps[] = [
         height: 100%;
     }
 }
-
 </style>
