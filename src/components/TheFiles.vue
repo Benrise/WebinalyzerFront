@@ -1,4 +1,10 @@
 <template>
+    <div class="relative w-full max-w-sm items-center">
+      <Input type="text" placeholder="Найти файл" class="pl-10"/>
+      <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
+        <IconSearch class="size-6 text-muted-foreground"/>
+      </span>
+    </div>
     <div class="files">
         <div v-if="!isFetching" class="files__container">
           <Toggle :pressed="isSelected(lesson)" @click="selectLesson(lesson)" v-for="(lesson, index) in props.lessons" class="files__item" :key="index">
@@ -17,8 +23,10 @@ import { Toggle } from '@/shared/ui/toggle'
 import IconFile from '~icons/mdi/file';
 
 import BaseSkeleton from '@/components/BaseSkeleton.vue'
+import { Input } from '@/shared/ui/input'
 
 import IconClock from '~icons/heroicons/clock';
+import IconSearch from '~icons/radix-icons/magnifying-glass';
 
 import { useLessonsStore } from "@/store/lessons";
 import { computed } from 'vue';

@@ -5,7 +5,7 @@ import { defineStore } from 'pinia';
 export const useGraphsStore = defineStore('graphs', {
   state: () => ({
     currentGraphs: {} as GraphsDto,
-    isFetching: false as Boolean,
+    isFetching: true as Boolean,
     activeGraphsCount: 0 as number,
   }),
   actions: {

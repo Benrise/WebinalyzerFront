@@ -9,6 +9,7 @@ axiosInstance.interceptors.request.use(
         return config;
     },
     (error: AxiosError): Promise<AxiosError> => {
+        alert()
         return Promise.reject(error);
     }
 );
@@ -40,6 +41,7 @@ axiosInstance.interceptors.response.use(
             description: 'Сервер по техническим причинам временно не может обрабатывать запросы',
           });
       }
+      alert()
       Promise.reject(error);
     },
   );

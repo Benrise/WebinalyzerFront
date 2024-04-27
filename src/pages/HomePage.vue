@@ -8,12 +8,6 @@
       </TheUploadDrawer>
     </template>
     <template #content>
-      <div class="relative w-full max-w-sm items-center">
-        <Input type="text" placeholder="Найти файл" class="pl-10"/>
-        <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
-          <IconSearch class="size-6 text-muted-foreground"/>
-        </span>
-      </div>
       <TheFiles :lessons="lessons"/>
     </template>
   </ContentSection>
@@ -27,15 +21,14 @@ import { ContentSection } from "@/shared/ui/content-section";
 import type { ITabsConfig } from "@/shared/ui/tabs";
 
 import { Button } from '@/shared/ui/button'
-import { Input } from '@/shared/ui/input'
 
 import TheCharts from '@/components/TheCharts.vue'
 import TheFiles from '@/components/TheFiles.vue'
 import TheUploadDrawer from "@/components/TheUploadDrawer.vue";
 import TheComparison from '@/components/TheComparison.vue'
+import TheSummary from '@/components/TheSummary.vue'
 
 import IconPlus from '~icons/heroicons/plus-16-solid';
-import IconSearch from '~icons/radix-icons/magnifying-glass';
 
 import { computed, onMounted, watch } from "vue";
 
@@ -57,7 +50,7 @@ const tabs: ITabsConfig[] = [
   {
     value: "recommendations",
     title: "Сводка",
-    content: {},
+    content: TheSummary,
   },
   {
     value: "comparison",

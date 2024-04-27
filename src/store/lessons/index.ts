@@ -4,7 +4,7 @@ import { defineStore } from 'pinia';
 export const useLessonsStore = defineStore('lessons', {
   state: () => ({
     lessons: [] as string[],
-    isFetching: false as boolean,
+    isFetching: true as boolean,
     selectedLesson: '' as string,
   }),
   actions: {
@@ -15,7 +15,7 @@ export const useLessonsStore = defineStore('lessons', {
         this.lessons = lessons.data.slice(0, 100);
         if (!this.selectedLesson) {
           this.selectedLesson = this.lessons[0];
-          
+
         }
       } catch (error) {
         console.error('Error fetching lessons:', error);

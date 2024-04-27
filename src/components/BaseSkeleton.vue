@@ -3,8 +3,8 @@
         <div v-if="props.type === 'lessons'" class="skeleton__lessons">
             <div v-for="i in 8"  class="skeleton__lessons-items" :key="i">
                 <div class="skeleton__lessons-item">
-                  <Skeleton class="h-4 w-[250px]" />
-                  <Skeleton class="h-4 w-[200px]" />
+                  <Skeleton class="h-4 w-full" />
+                  <Skeleton class="h-4 max-w-[200px]" />
                 </div>
               </div>
         </div>
