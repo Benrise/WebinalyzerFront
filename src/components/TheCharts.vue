@@ -858,53 +858,14 @@ onMounted(() => {
     const ctx_msg_length = document.getElementById('msg_length') as HTMLCanvasElement
     const ctx_msg_length_time = document.getElementById('msg_length_time') as HTMLCanvasElement
     
-    const chart_msg_count = new Chart(ctx_msg_count, {
-        type: 'bar',
-        data: {
-            datasets: [
-                {
-                    label: 'Длина сообщения в зависимости от длительности урока',
-                    data: msg_count
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                title: {
-                    display: true,
-                    text: 'Длина сообщений в зависимости от времени с начала урока'
-                }
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Минуты с начала урока',
-                        padding: {top: 10, left: 0, right: 0, bottom: 0}
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Длина сообщения',
-                        padding: {top: 0, left: 0, right: 0, bottom: 10}
-                    }
-                }
-            }
-        },
-    })
-
     const chart_msg_length = new Chart(ctx_msg_length, {
         type: "scatter",
         data: {
             datasets: [
                 {
                     label: "Длина сообщения",
-                    data: msg_length.hist,
+                    data: msg_length.hist.map((value, index) => ({ x: index, y: value })),
+                    backgroundColor: 'rgb(255,165,0)'
                 }
             ]
         },
@@ -938,23 +899,59 @@ onMounted(() => {
         },
     })
 
-    const chart_msg_length_time = new Chart(ctx_msg_length_time, {
+    const chart_msg_count = new Chart(ctx_msg_count, {
         type: 'bar',
         data: {
             datasets: [
                 {
-                    data: msg_length_time.minutes_since_start,
-                    stack: 'combined',
-                    type: 'bar',
-                    order: 1
-                },
-                {
-                    data: msg_length_time.message_lengths,
-                    stack: 'combined',
-                    type: 'scatter',
-                    order: 0
+                    label: 'Длина сообщения в зависимости от длительности урока',
+                    data: msg_count,
+                    backgroundColor: 'rgb(160,32,240)'
                 }
             ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Длина сообщений в зависимости от времени с начала урока'
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Минуты с начала урока',
+                        padding: {top: 10, left: 0, right: 0, bottom: 0}
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Длина сообщения',
+                        padding: {top: 0, left: 0, right: 0, bottom: 10}
+                    }
+                }
+            }
+        },
+    })
+
+    const chart_msg_length_time = new Chart(ctx_msg_length_time, {
+        type: 'bubble',
+        data: {
+            datasets: [
+                {
+                    data: msg_length_time.minutes_since_start.map((x, index) => ({
+                        x: x,
+                        y: msg_length_time.message_lengths[index],
+                        r: 5
+                    })),
+                    backgroundColor: 'rgb(255, 99, 132)'
+                }],
         },
         options: {
             responsive: true,
@@ -985,10 +982,6 @@ onMounted(() => {
             }
         },
     })
-
-
-
-
 })
 </script>
 
