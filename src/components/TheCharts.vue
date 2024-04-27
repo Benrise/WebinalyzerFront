@@ -2,13 +2,13 @@
     <div class="graphs">
         <div v-show="!isFetching" class="graphs__container">
             <div class="graphs__item">
-                <div><canvas id="msg_length"></canvas></div>
+                <div><canvas id="msg_length" ref="msg_length"></canvas></div>
             </div>
             <div class="graphs__item">
-                <div><canvas id="msg_count"></canvas></div>
+                <div><canvas id="msg_count" ref="msg_count"></canvas></div>
             </div>
             <div class="graphs__item">
-                <div><canvas id="msg_length_time"></canvas></div>
+                <div><canvas id="msg_length_time" ref="msg_length_time"></canvas></div>
             </div>
         </div>
         <div v-if="isFetching" class="graphs__container">
@@ -26,11 +26,13 @@ import { useLessonsStore } from "@/store/lessons";
 
 import BaseSkeleton from '@/components/BaseSkeleton.vue'
 import { isEmptyObject } from '@/shared/lib/utils';
+import type { GraphsDto } from '@/api/dto';
 
 const graphsStore = useGraphsStore()
 const lessonsStore = useLessonsStore()
 
 const isFetching = computed(() => graphsStore.isFetching)
+const currentGraphs = computed(() => graphsStore.currentGraphs)
 
 const msgLength = ref<any>(null);
 const msgCount = ref<any>(null);
@@ -44,18 +46,15 @@ onMounted(() => {
     ctxMsgCount = document.getElementById('msg_count') as HTMLCanvasElement;
     ctxMsgLength = document.getElementById('msg_length') as HTMLCanvasElement;
     ctxMsgLengthTime = document.getElementById('msg_length_time') as HTMLCanvasElement;
+
+    updateCharts(currentGraphs.value);
 });
 
-watch(() => graphsStore.currentGraphs, (newGraphs) => {
+watch(() => currentGraphs.value, (newGraphs) => {
       if (newGraphs) {
-        const integerSelectedLesson = parseInt(lessonsStore.selectedLesson);
-        msgLength.value = newGraphs.msg_length ? newGraphs.msg_length[integerSelectedLesson] : null;
-        msgCount.value = newGraphs.msg_count ? newGraphs.msg_count[integerSelectedLesson] : null;
-        msgLengthTime.value = newGraphs.msg_length_time ? newGraphs.msg_length_time[integerSelectedLesson] : null;
-
         const normalCount = [msgLength.value, msgCount.value, msgLengthTime.value].filter(value => value !== null && !isEmptyObject(value)).length;
         graphsStore.setActiveGraphsCount(normalCount);
-        updateCharts();
+        updateCharts(newGraphs);
       }
 });
 
@@ -64,7 +63,12 @@ let chartMsgCount: Chart
 let chartMsgLengthTime: Chart
 
 
-const updateCharts = () => {
+const updateCharts = (graphs: GraphsDto) => {
+    const integerSelectedLesson = parseInt(lessonsStore.selectedLesson);
+    msgLength.value = graphs.msg_length ? graphs.msg_length[integerSelectedLesson] : null;
+    msgCount.value = graphs.msg_count ? graphs.msg_count[integerSelectedLesson] : null;
+    msgLengthTime.value = graphs.msg_length_time ? graphs.msg_length_time[integerSelectedLesson] : null;
+
     if (chartMsgLength) {
         chartMsgLength.destroy();
     }
@@ -152,7 +156,6 @@ const updateCharts = () => {
             }
         });
     }
-
 };
 
 </script>

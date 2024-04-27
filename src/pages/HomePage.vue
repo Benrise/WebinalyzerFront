@@ -32,6 +32,7 @@ import { Input } from '@/shared/ui/input'
 import TheCharts from '@/components/TheCharts.vue'
 import TheFiles from '@/components/TheFiles.vue'
 import TheUploadDrawer from "@/components/TheUploadDrawer.vue";
+import TheComparison from '@/components/TheComparison.vue'
 
 import IconPlus from '~icons/heroicons/plus-16-solid';
 import IconSearch from '~icons/radix-icons/magnifying-glass';
@@ -61,7 +62,7 @@ const tabs: ITabsConfig[] = [
   {
     value: "comparison",
     title: "Сравненительный анализ",
-    content: {},
+    content: TheComparison,
   },
 ];
 
