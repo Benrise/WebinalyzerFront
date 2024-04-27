@@ -20,4 +20,9 @@ export class GraphsDto {
             message_lengths: number[];
         };
     };
+    msg_emotions?: {
+        [id: number]: {
+            [emotion: string]: number;
+        };
+    }
 }

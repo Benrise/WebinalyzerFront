@@ -9,7 +9,7 @@
         </div>
         <div class="comparison__select-file">
             <span>Файл сравнения №2</span>
-            <ComparisonCombobox/>
+            <ComparisonCombobox />
         </div>
     </div>
 </template>

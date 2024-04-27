@@ -18,7 +18,6 @@ axiosInstance.interceptors.request.use(
       return config;
   },
   (error: AxiosError): Promise<AxiosError> => {
-      alert()
       return Promise.reject(error);
   }
 );
@@ -29,12 +28,10 @@ axiosInstance.interceptors.response.use(
   },
   async (error: AxiosError) => {
     const statusCode = error.response?.status;
+    const { message } = error.response?.data as { message: string };
     console.error(error);
     if (statusCode && statusCode >= 500) {
-        toast({
-          title: `${statusCode} - сервер недоступен`,
-          description: 'Сервер по техническим причинам временно не может обрабатывать запросы',
-        });
+        alert(`${statusCode} - ошибка сервера`);
     }
     Promise.reject(error);
   },

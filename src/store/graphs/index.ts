@@ -21,8 +21,5 @@ export const useGraphsStore = defineStore('graphs', {
         }
         
     },
-    async setActiveGraphsCount(count: number) {
-      this.activeGraphsCount = count
-    }
   },
 });

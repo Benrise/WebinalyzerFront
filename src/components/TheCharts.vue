@@ -11,7 +11,18 @@
                 <div><canvas id="msg_length_time" ref="msg_length_time"></canvas></div>
             </div>
             <div class="graphs__item">
-                
+                <div class="graphs__additionals">
+                    <AdditionalCard v-for="(card, index) in cardsConfig" 
+                    :key="index" 
+                    :type="card.type" 
+                    :value="card.value" 
+                    :description="card.description"
+                    :backgroundColor="card.backgroundColor"
+                    :secondaryColor="card.secondaryColor"
+                    :mainColor="card.mainColor"
+                    :emotion="card.emotion"
+                    />
+                </div>
             </div>
         </div>
         <div v-if="isFetching" class="graphs__container">
@@ -28,6 +39,9 @@ import { useGraphsStore } from "@/store/graphs";
 import { useLessonsStore } from "@/store/lessons";
 
 import BaseSkeleton from '@/components/BaseSkeleton.vue'
+import AdditionalCard from '@/components/AdditionalCard.vue';
+import type { CardProps } from '@/components/AdditionalCard.vue';
+
 import { isEmptyObject } from '@/shared/lib/utils';
 import type { GraphsDto } from '@/api/dto';
 
@@ -37,6 +51,8 @@ const lessonsStore = useLessonsStore()
 const isFetching = computed(() => graphsStore.isFetching)
 const currentGraphs = computed(() => graphsStore.currentGraphs)
 
+const integerSelectedLesson = computed(() => parseInt(lessonsStore.selectedLesson));
+
 const msgLength = ref<any>(null);
 const msgCount = ref<any>(null);
 const msgLengthTime = ref<any>(null);
@@ -44,6 +60,10 @@ const msgLengthTime = ref<any>(null);
 let ctxMsgCount: any;
 let ctxMsgLength: any;
 let ctxMsgLengthTime: any;
+
+let chartMsgLength: Chart
+let chartMsgCount: Chart
+let chartMsgLengthTime: Chart
 
 onMounted(() => {
     ctxMsgCount = document.getElementById('msg_count') as HTMLCanvasElement;
@@ -55,22 +75,14 @@ onMounted(() => {
 
 watch(() => currentGraphs.value, (newGraphs) => {
       if (newGraphs) {
-        const normalCount = [msgLength.value, msgCount.value, msgLengthTime.value].filter(value => value !== null && !isEmptyObject(value)).length;
-        graphsStore.setActiveGraphsCount(normalCount);
         updateCharts(newGraphs);
       }
 });
 
-let chartMsgLength: Chart
-let chartMsgCount: Chart
-let chartMsgLengthTime: Chart
-
-
 const updateCharts = (graphs: GraphsDto) => {
-    const integerSelectedLesson = parseInt(lessonsStore.selectedLesson);
-    msgLength.value = graphs.msg_length ? graphs.msg_length[integerSelectedLesson] : null;
-    msgCount.value = graphs.msg_count ? graphs.msg_count[integerSelectedLesson] : null;
-    msgLengthTime.value = graphs.msg_length_time ? graphs.msg_length_time[integerSelectedLesson] : null;
+    msgLength.value = graphs.msg_length ? graphs.msg_length[integerSelectedLesson.value] : null;
+    msgCount.value = graphs.msg_count ? graphs.msg_count[integerSelectedLesson.value] : null;
+    msgLengthTime.value = graphs.msg_length_time ? graphs.msg_length_time[integerSelectedLesson.value] : null;
 
     if (chartMsgLength) {
         chartMsgLength.destroy();
@@ -137,14 +149,24 @@ const updateCharts = (graphs: GraphsDto) => {
         chartMsgLengthTime = new Chart(ctxMsgLengthTime, {
             type: 'bubble',
             data: {
-            datasets: [{
-                data: msgLengthTime.value.minutes_since_start.map((x: number, index: number) => ({
-                x: x,
-                y: msgLengthTime.value.message_lengths[index],
-                r: 5
-                })),
-                backgroundColor: 'rgb(255, 99, 132)'
-            }]
+            datasets: [
+                    {
+                        data: msgLengthTime.value.minutes_since_start.map((x: number, index: number) => ({
+                            x: x,
+                            y: msgLengthTime.value.message_lengths[index],
+                            r: 5
+                        })),
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        order: 1
+                    },
+                    {
+                        label: 'Длина сообщения в зависимости от длительности урока',
+                        data: msgCount.value,
+                        backgroundColor: 'rgb(160,32,240)',
+                        type: 'bar',
+                        order: 0
+                    }
+                ]
             },
             options: {
             responsive: true,
@@ -161,6 +183,34 @@ const updateCharts = (graphs: GraphsDto) => {
     }
 };
 
+const cardsConfig: CardProps[] = [
+    {
+        type: 'message',
+        value: '224',
+        description: 'cообщений всего',
+        backgroundColor: '#ECEDFF',
+        mainColor: '#004DFF',
+        secondaryColor: '#D2D4FF'
+    },
+    {
+        type: 'emotion',
+        value: 'позитивный',
+        description: 'основной сентимент',
+        backgroundColor: '#EEFFE6',
+        mainColor: '#008000',
+        secondaryColor: '#D0FFC0',
+        emotion: 'smile',
+    },
+    {
+        type: 'satisfaction',
+        value: '100%',
+        description: 'удовлетворенность',
+        backgroundColor: '#FBE3FF',
+        mainColor: '#FF00E6',
+        secondaryColor: '#FED2FF',
+    }
+]
+
 </script>
 
 <style scoped lang="scss">
@@ -175,6 +225,13 @@ const updateCharts = (graphs: GraphsDto) => {
 
     &__item {
         width: 100%;
+    }
+
+    &__additionals {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        height: 100%;
     }
 }
 
