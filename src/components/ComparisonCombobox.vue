@@ -1,31 +1,3 @@
-<script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { ComboboxAnchor, ComboboxInput, ComboboxPortal, ComboboxRoot } from 'radix-vue'
-import { CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/shared/ui/command'
-import { TagsInput, TagsInputInput, TagsInputItem, TagsInputItemDelete, TagsInputItemText } from '@/shared/ui/tags-input'
-
-import { useComparisonStore } from "@/store/comparison";
-import { useLessonsStore } from '@/store/lessons';
-
-const comparisonStore = useComparisonStore()
-const lessonsStore = useLessonsStore()
-
-const lessons = computed(() => lessonsStore.lessons)
-
-const modelValue = ref<string[]>([])
-const open = ref(false)
-const searchTerm = ref('')
-
-watch(() => modelValue.value, (newValue) => {
-      if (newValue[0]) {
-        comparisonStore.setGraph(newValue[0]);
-      }
-}, { deep: true });
-
-const filteredLessons = computed(() => lessons.value.filter((i:string) => !modelValue.value.includes(i)))
-
-</script>
-
 <template>
   <TagsInput class="px-0 gap-0 w-80" :model-value="modelValue">
     <div class="flex gap-2 flex-wrap items-center px-3">
@@ -35,10 +7,19 @@ const filteredLessons = computed(() => lessons.value.filter((i:string) => !model
       </TagsInputItem>
     </div>
 
-    <ComboboxRoot v-model="modelValue" v-model:open="open" v-model:searchTerm="searchTerm" class="w-full">
+    <ComboboxRoot
+      v-model="modelValue"
+      v-model:open="open"
+      v-model:searchTerm="searchTerm"
+      class="w-full"
+    >
       <ComboboxAnchor v-if="modelValue.length === 0" as-child>
         <ComboboxInput placeholder="Найти и выбрать файл" as-child>
-          <TagsInputInput class="w-full px-3" :class="modelValue.length > 0 ? 'mt-2' : ''" @keydown.enter.prevent />
+          <TagsInputInput
+            class="w-full px-3"
+            :class="modelValue.length > 0 ? 'mt-2' : ''"
+            @keydown.enter.prevent
+          />
         </ComboboxInput>
       </ComboboxAnchor>
 
@@ -50,18 +31,22 @@ const filteredLessons = computed(() => lessons.value.filter((i:string) => !model
           <CommandEmpty />
           <CommandGroup>
             <CommandItem
-              v-for="(lesson, index) in filteredLessons" :key="index" :value="lesson"
-              @select.prevent="(ev) => {
-                if (typeof ev.detail.value === 'string') {
-                  searchTerm = ''
-                  modelValue.push(ev.detail.value)
-                  $emit('update:selected', modelValue)
-                }
+              v-for="(lesson, index) in filteredLessons"
+              :key="index"
+              :value="lesson"
+              @select.prevent="
+                (ev) => {
+                  if (typeof ev.detail.value === 'string') {
+                    searchTerm = '';
+                    modelValue.push(ev.detail.value);
+                    $emit('update:selected', modelValue);
+                  }
 
-                if (filteredLessons.length === 0 || modelValue.length === 1) {
-                  open = false
+                  if (filteredLessons.length === 0 || modelValue.length === 1) {
+                    open = false;
+                  }
                 }
-              }"
+              "
             >
               {{ lesson }}
             </CommandItem>
@@ -71,3 +56,30 @@ const filteredLessons = computed(() => lessons.value.filter((i:string) => !model
     </ComboboxRoot>
   </TagsInput>
 </template>
+
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import { ComboboxAnchor, ComboboxInput, ComboboxPortal, ComboboxRoot } from 'radix-vue';
+import { CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/shared/ui/command';
+import {
+  TagsInput,
+  TagsInputInput,
+  TagsInputItem,
+  TagsInputItemDelete,
+  TagsInputItemText,
+} from '@/shared/ui/tags-input';
+
+import { useLessonsStore } from '@/store/lessons';
+
+const lessonsStore = useLessonsStore();
+
+const lessons = computed(() => lessonsStore.lessons);
+
+const modelValue = ref<string[]>([]);
+const open = ref(false);
+const searchTerm = ref('');
+
+const filteredLessons = computed(() =>
+  lessons.value.filter((i: string) => !modelValue.value.includes(i))
+);
+</script>

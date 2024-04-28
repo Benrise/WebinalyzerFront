@@ -4,21 +4,36 @@ import http from '@/api/http';
 
 export const useComparisonStore = defineStore('comparison', {
   state: () => ({
-    graphs: {} as Record<string, GraphsDto>,
+    graphs: [] as GraphsDto[],
+    isFetching: false as Boolean,
   }),
   actions: {
     async setGraph(lesson: string) {
-      const graph = (await http.graphs.get(lesson)).data;
-      this.graphs[lesson] = graph;
+      try {
+        this.isFetching = true;
+        const graph = (await http.graphs.get(lesson)).data;
+        this.graphs.push(graph);
+        return graph;
+      } catch (error) {
+        console.error('Error fetching graphs:', error);
+      } finally {
+        this.isFetching = false;
+      }
     },
     removeGraph(lesson: string) {
-      delete this.graphs[lesson];
+      const graphToRemove = this.graphs.find((g) => g?.id === lesson);
+      if (graphToRemove) {
+        const index = this.graphs.indexOf(graphToRemove);
+        if (index !== -1) {
+          this.graphs.splice(index, 1);
+        }
+      }
     },
     resetGraphs() {
-      this.graphs = {};
+      this.graphs = [];
     },
     getGraph(lesson: string) {
-      return this.graphs[lesson];
-    }
+      return this.graphs.find((g) => g?.id === lesson);
+    },
   },
 });

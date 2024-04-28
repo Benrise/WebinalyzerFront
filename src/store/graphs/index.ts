@@ -8,8 +8,6 @@ export const useGraphsStore = defineStore('graphs', {
     isFetching: true as Boolean,
     activeGraphsCount: 0 as number,
     popularSentiment: '' as string,
-    summary:
-      'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua' as string,
   }),
   actions: {
     async fetchGraphs(lesson: string) {
