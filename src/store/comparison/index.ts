@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { GraphsDto } from '@/api/dto';
 import http from '@/api/http';
+import type { LessonsDto } from '@/api/dto/lessons.dto';
 
 export const useComparisonStore = defineStore('comparison', {
   state: () => ({
@@ -8,10 +9,10 @@ export const useComparisonStore = defineStore('comparison', {
     isFetching: false as Boolean,
   }),
   actions: {
-    async setGraph(lesson: string) {
+    async setGraph(lesson: LessonsDto) {
       try {
         this.isFetching = true;
-        const graph = (await http.graphs.get(lesson)).data;
+        const graph = (await http.graphs.get(lesson.id)).data;
         this.graphs.push(graph);
         return graph;
       } catch (error) {
@@ -20,8 +21,8 @@ export const useComparisonStore = defineStore('comparison', {
         this.isFetching = false;
       }
     },
-    removeGraph(lesson: string) {
-      const graphToRemove = this.graphs.find((g) => g?.id === lesson);
+    removeGraph(lesson: LessonsDto) {
+      const graphToRemove = this.graphs.find((g) => g?.id === lesson.id);
       if (graphToRemove) {
         const index = this.graphs.indexOf(graphToRemove);
         if (index !== -1) {
@@ -32,8 +33,8 @@ export const useComparisonStore = defineStore('comparison', {
     resetGraphs() {
       this.graphs = [];
     },
-    getGraph(lesson: string) {
-      return this.graphs.find((g) => g?.id === lesson);
+    getGraph(lesson: LessonsDto) {
+      return this.graphs.find((g) => g?.id === lesson.id);
     },
   },
 });

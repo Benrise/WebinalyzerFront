@@ -3,25 +3,32 @@
     <div class="comparison__graph">
       <div><canvas id="comparison" ref="comparison"></canvas></div>
     </div>
-    <div class="comparison__select">
-      <div class="comparison__select-item">
-        <div class="flex gap-2 items-center">
-          <span>Файл сравнения №1</span>
+    <Card>
+      <CardHeader>
+        <CardTitle>Настройки</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div class="comparison__select">
+          <div class="comparison__select-item">
+            <div class="flex gap-2 items-center">
+              <span>Файл сравнения №1</span>
+            </div>
+            <ComparisonCombobox @update:selected="setData($event)" />
+          </div>
+          <div class="comparison__select-item">
+            <span>Файл сравнения №2</span>
+            <ComparisonCombobox @update:selected="setData($event)" />
+          </div>
+          <div class="flex flex-row gap-2">
+            <Button @click="compare" class="w-full" :disabled="graphs.length !== 2 || isFetching">
+              <IconLoader class="animate-spin mr-2" v-if="isFetching" />
+              Сравнить
+            </Button>
+            <Button @click="clearData" variant="outline">Обнулить график</Button>
+          </div>
         </div>
-        <ComparisonCombobox @update:selected="setData($event)" />
-      </div>
-      <div class="comparison__select-item">
-        <span>Файл сравнения №2</span>
-        <ComparisonCombobox @update:selected="setData($event)" />
-      </div>
-      <div class="flex flex-row gap-2">
-        <Button @click="compare" class="w-full" :disabled="graphs.length !== 2 || isFetching">
-          <IconLoader class="animate-spin mr-2" v-if="isFetching" />
-          Сравнить
-        </Button>
-        <Button @click="clearData" variant="outline">Обнулить график</Button>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   </div>
 </template>
 
@@ -35,6 +42,8 @@ import { useComparisonStore } from '@/store/comparison';
 import IconLoader from '~icons/tabler/loader-2';
 
 import { Button } from '@/shared/ui/button';
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 
 const ctx = ref<HTMLCanvasElement | null>(null);
 let chart: Chart;
@@ -202,7 +211,7 @@ onMounted(() => {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 24px;
   &__graph {
     width: 60%;
   }

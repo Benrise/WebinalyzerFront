@@ -37,8 +37,6 @@ import {
   DrawerTrigger,
 } from '@/shared/ui/drawer';
 
-import { useToast } from '@/shared/ui/toast/use-toast';
-
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 
@@ -51,8 +49,6 @@ import { computed, ref } from 'vue';
 const lessonsStore = useLessonsStore();
 
 const file = ref<File | null>(null);
-
-const { toast } = useToast();
 
 const isFetching = computed(() => lessonsStore.isFetching);
 

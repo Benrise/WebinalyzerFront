@@ -51,7 +51,7 @@ const lessonsStore = useLessonsStore();
 const isFetching = computed(() => graphsStore.isFetching);
 const currentGraphs = computed(() => graphsStore.currentGraphs);
 
-const integerSelectedLesson = computed(() => parseInt(lessonsStore.selectedLesson));
+const integerSelectedLesson = computed(() => parseInt(lessonsStore.selectedLessonId));
 
 const getTotalMessages = (graphs: GraphsDto) => {
   if (graphs && graphs.msg_length) {

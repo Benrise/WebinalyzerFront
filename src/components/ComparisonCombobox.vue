@@ -6,7 +6,6 @@
         <TagsInputItemDelete />
       </TagsInputItem>
     </div>
-
     <ComboboxRoot
       v-model="modelValue"
       v-model:open="open"
@@ -73,7 +72,7 @@ import { useLessonsStore } from '@/store/lessons';
 
 const lessonsStore = useLessonsStore();
 
-const lessons = computed(() => lessonsStore.lessons);
+const lessons = computed(() => lessonsStore.lessons.map((i) => i.id));
 
 const modelValue = ref<string[]>([]);
 const open = ref(false);

@@ -10,10 +10,10 @@ export const useGraphsStore = defineStore('graphs', {
     popularSentiment: '' as string,
   }),
   actions: {
-    async fetchGraphs(lesson: string) {
+    async fetchGraphs(lessonId: string) {
       try {
         this.isFetching = true;
-        this.currentGraphs = (await http.graphs.get(lesson)).data;
+        this.currentGraphs = (await http.graphs.get(lessonId)).data;
       } catch (error) {
         console.error('Error fetching graphs:', error);
       } finally {

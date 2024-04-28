@@ -30,7 +30,7 @@ import TheSummary from '@/components/TheSummary.vue';
 
 import IconPlus from '~icons/heroicons/plus-16-solid';
 
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 
 import { useLessonsStore } from '@/store/lessons';
 import { useGraphsStore } from '@/store/graphs';
@@ -66,7 +66,7 @@ onMounted(() => {
 const lessons = computed(() => lessonsStore.lessons);
 
 watch(
-  () => lessonsStore.selectedLesson,
+  () => lessonsStore.selectedLessonId,
   (selectedLesson) => {
     if (selectedLesson) {
       graphsStore.fetchGraphs(selectedLesson);

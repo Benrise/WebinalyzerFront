@@ -1,14 +1,15 @@
 import http from '@/api/http';
 import { defineStore } from 'pinia';
 import { useToast } from '@/shared/ui/toast/use-toast';
+import type { LessonsDto } from '@/api/dto/lessons.dto';
 
 const { toast } = useToast();
 
 export const useLessonsStore = defineStore('lessons', {
   state: () => ({
-    lessons: [] as string[],
+    lessons: [] as LessonsDto[],
     isFetching: true as boolean,
-    selectedLesson: '' as string,
+    selectedLessonId: '' as string,
   }),
   actions: {
     async fetchLessons() {
@@ -17,8 +18,8 @@ export const useLessonsStore = defineStore('lessons', {
         const response = await http.lessonsStatuses.list();
         if (response.status === 200) {
           this.lessons = response.data.slice(0, 100);
-          if (!this.selectedLesson) {
-            this.selectedLesson = this.lessons[0];
+          if (!this.selectedLessonId) {
+            this.selectedLessonId = this.lessons[0].id;
           }
         }
       } catch (error) {
@@ -29,7 +30,7 @@ export const useLessonsStore = defineStore('lessons', {
       }
     },
     setSelectedLesson(lesson: string) {
-      this.selectedLesson = lesson;
+      this.selectedLessonId = lesson;
     },
     async sendFile(file: File) {
       try {

@@ -8,7 +8,7 @@
   <div class="files">
     <div v-if="!isFetching" class="files__container">
       <Toggle
-        :pressed="isSelected(lesson)"
+        :pressed="isSelected(lesson.id)"
         @click="selectLesson(lesson)"
         v-for="(lesson, index) in props.lessons"
         class="files__item"
@@ -37,6 +37,7 @@ import IconCheck from '~icons/heroicons/check-circle';
 
 import { useLessonsStore } from '@/store/lessons';
 import { computed } from 'vue';
+import type { LessonsDto } from '@/api/dto/lessons.dto';
 
 const lessonsStore = useLessonsStore();
 const isFetching = computed(() => lessonsStore.isFetching);
@@ -50,12 +51,12 @@ interface LessonsProps {
 
 const props = defineProps<LessonsProps>();
 
-const selectLesson = (lesson: string) => {
-  lessonsStore.setSelectedLesson(lesson);
+const selectLesson = (lesson: LessonsDto) => {
+  lessonsStore.setSelectedLesson(lesson.id);
 };
 
 const isSelected = (lesson: string) => {
-  return lessonsStore.selectedLesson === lesson;
+  return lessonsStore.selectedLessonId === lesson;
 };
 </script>
 
