@@ -27,11 +27,12 @@ axiosInstance.interceptors.response.use(
     return Promise.resolve(response);
   },
   async (error: AxiosError) => {
-    const statusCode = error.response?.status;
     console.error(error);
-    if (statusCode && statusCode >= 500) {
-      alert(`${statusCode} - ошибка сервера`);
-    }
+    toast({
+      variant: 'destructive',
+      title: 'Непредвиденная ошибка',
+      description: `${error}`,
+    });
     Promise.reject(error);
   }
 );

@@ -8,14 +8,14 @@
         <div class="flex gap-2 items-center">
           <span>Файл сравнения №1</span>
         </div>
-        <ComparisonCombobox @update:selected="addData(chart, $event)" />
+        <ComparisonCombobox @update:selected="setData($event)" />
       </div>
       <div class="comparison__select-item">
         <span>Файл сравнения №2</span>
-        <ComparisonCombobox @update:selected="addData(chart, $event)" />
+        <ComparisonCombobox @update:selected="setData($event)" />
       </div>
       <div class="flex flex-row gap-2">
-        <Button class="w-full" :disabled="graphs.length !== 2 || isFetching">
+        <Button @click="compare" class="w-full" :disabled="graphs.length !== 2 || isFetching">
           <IconLoader class="animate-spin mr-2" v-if="isFetching" />
           Сравнить
         </Button>
@@ -56,15 +56,91 @@ function removeData(chart: Chart) {
 const clearData = () => {
   removeData(chart);
 };
-function addData(chart: Chart, newData: any) {
-  const data = comparisonStore.setGraph(newData);
 
-  console.log(data);
-  //   chart.data.datasets.forEach((dataset) => {
-  //     dataset.data.push(newData);
-  //   });
-  //   chart.update();
-  return;
+const compare = () => {
+  if (graphs.value.length === 2 && !isFetching.value && graphs.value[0] && graphs.value[1]) {
+    const sentimentCounts1 = {
+      Нейтрален: 0,
+      Интересно: 0,
+      Неинтересно: 0,
+      Негативен: 0,
+      Позитивен: 0,
+    };
+
+    graphs.value[0].msg_emotions.forEach((item: any) => {
+      switch (item.Sentiment) {
+        case 'neutral':
+          sentimentCounts1['Нейтрален']++;
+          break;
+        case 'speech':
+          sentimentCounts1['Интересно']++;
+          break;
+        case 'skip':
+          sentimentCounts1['Неинтересно']++;
+          break;
+        case 'negative':
+          sentimentCounts1['Негативен']++;
+          break;
+        case 'positive':
+          sentimentCounts1['Позитивен']++;
+          break;
+        default:
+          break;
+      }
+    });
+
+    const sentimentCounts2 = {
+      Нейтрален: 0,
+      Интересно: 0,
+      Неинтересно: 0,
+      Негативен: 0,
+      Позитивен: 0,
+    };
+
+    graphs.value[1].msg_emotions.forEach((item: any) => {
+      switch (item.Sentiment) {
+        case 'neutral':
+          sentimentCounts2['Нейтрален']++;
+          break;
+        case 'speech':
+          sentimentCounts2['Интересно']++;
+          break;
+        case 'skip':
+          sentimentCounts2['Неинтересно']++;
+          break;
+        case 'negative':
+          sentimentCounts2['Негативен']++;
+          break;
+        case 'positive':
+          sentimentCounts2['Позитивен']++;
+          break;
+        default:
+          break;
+      }
+    });
+
+    const toxicity1 = sentimentCounts1['Негативен'] || 0;
+    const toxicity2 = sentimentCounts2['Негативен'] || 0;
+
+    addData(chart, toxicity1, graphs.value[0].id, 0);
+    addData(chart, toxicity2, graphs.value[1].id, 1);
+
+    const count1 = graphs.value[0].msg_length[graphs.value[0].id].total_messages || 0;
+    const count2 = graphs.value[0].msg_length[graphs.value[0].id].total_messages || 0;
+
+    addData(chart, count1, graphs.value[0].id, 0);
+    addData(chart, count2, graphs.value[1].id, 1);
+  }
+};
+
+async function setData(newData: any) {
+  await comparisonStore.setGraph(newData);
+}
+
+function addData(chart: Chart, newData: any, label: string, index: number) {
+  chart.data.datasets[index].data.push(newData);
+  chart.data.datasets[index].label = label;
+  chart.update();
 }
 
 onMounted(() => {
@@ -89,12 +165,12 @@ onMounted(() => {
           },
         ],
         labels: [
+          'Кол-во сообщений',
+          'Интерес',
           'Токсичность',
           'Технические неполадки',
           'Активность',
           'Удовлетворенность',
-          'Кол-во сообщений',
-          'Интерес',
           'Длительность урока',
         ],
       },
