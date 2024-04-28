@@ -143,6 +143,7 @@ const compare = () => {
 };
 
 async function setData(newData: any) {
+  console.log(newData);
   await comparisonStore.setGraph(newData);
 }
 
@@ -162,13 +163,13 @@ onMounted(() => {
         datasets: [
           {
             label: 'Файл №1 (пусто)',
-            data: [],
+            data: [66, 23, 0, 0, 25, 30, 60],
             borderColor: 'red',
             backgroundColor: 'rgba(255, 0, 0, 0.5)',
           },
           {
             label: 'Файл №2 (пусто)',
-            data: [],
+            data: [30, 60, 0, 1, 50, 60, 45],
             borderColor: 'blue',
             backgroundColor: 'rgba(0, 0, 255, 0.5)',
           },
