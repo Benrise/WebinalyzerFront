@@ -324,9 +324,6 @@ const updateCardsConfig = (graphs: GraphsDto) => {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
     gap: 24px;
-    align-items: center;
-    justify-items: center;
-    height: 100%;
   }
 
   &__item {

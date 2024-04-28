@@ -65,7 +65,7 @@ const getClassByEmotion = (emotion: Emotion | undefined) => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 48px;
+  gap: 24px;
   width: 100%;
   height: 100%;
   padding: 24px;
@@ -74,8 +74,8 @@ const getClassByEmotion = (emotion: Emotion | undefined) => {
   background-color: v-bind('props.backgroundColor');
 
   &__icon {
-    width: 72px;
-    height: 72px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -84,15 +84,19 @@ const getClassByEmotion = (emotion: Emotion | undefined) => {
   }
 
   &__icon-body {
-    width: 40px;
-    height: 40px;
+    width: 24px;
+    height: 24px;
     color: v-bind('props.mainColor');
   }
 
   &__value {
-    font-size: 32px;
+    font-size: 24px;
     font-weight: bold;
     color: v-bind('props.mainColor');
+  }
+
+  &__description {
+    font-size: 16px;
   }
 }
 
