@@ -3,12 +3,12 @@
     <template #actions>
       <TheUploadDrawer>
         <template #trigger>
-          <Button size="sm"><IconPlus/></Button>
+          <Button size="sm"><IconPlus /></Button>
         </template>
       </TheUploadDrawer>
     </template>
     <template #content>
-      <TheFiles :lessons="lessons"/>
+      <TheFiles :lessons="lessons" />
     </template>
   </ContentSection>
   <div class="flex flex-col gap-5">
@@ -17,61 +17,62 @@
 </template>
 
 <script lang="ts" setup>
-import { ContentSection } from "@/shared/ui/content-section";
-import type { ITabsConfig } from "@/shared/ui/tabs";
+import { ContentSection } from '@/shared/ui/content-section';
+import type { ITabsConfig } from '@/shared/ui/tabs';
 
-import { Button } from '@/shared/ui/button'
+import { Button } from '@/shared/ui/button';
 
-import TheCharts from '@/components/TheCharts.vue'
-import TheFiles from '@/components/TheFiles.vue'
-import TheUploadDrawer from "@/components/TheUploadDrawer.vue";
-import TheComparison from '@/components/TheComparison.vue'
-import TheSummary from '@/components/TheSummary.vue'
+import TheCharts from '@/components/TheCharts.vue';
+import TheFiles from '@/components/TheFiles.vue';
+import TheUploadDrawer from '@/components/TheUploadDrawer.vue';
+import TheComparison from '@/components/TheComparison.vue';
+import TheSummary from '@/components/TheSummary.vue';
 
 import IconPlus from '~icons/heroicons/plus-16-solid';
 
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, ref, watch } from 'vue';
 
-import { useLessonsStore } from "@/store/lessons";
-import { useGraphsStore } from "@/store/graphs";
+import { useLessonsStore } from '@/store/lessons';
+import { useGraphsStore } from '@/store/graphs';
 
 const lessonsStore = useLessonsStore();
 const graphsStore = useGraphsStore();
 
-const title1 = "Данные";
-const title2 = "Дашборд";
+const title1 = 'Данные';
+const title2 = 'Дашборд';
 
 const tabs: ITabsConfig[] = [
   {
-    value: "community",
-    title: "Инфографика",
+    value: 'community',
+    title: 'Инфографика',
     content: TheCharts,
   },
   {
-    value: "recommendations",
-    title: "Сводка",
+    value: 'recommendations',
+    title: 'Сводка',
     content: TheSummary,
   },
   {
-    value: "comparison",
-    title: "Сравненительный анализ",
+    value: 'comparison',
+    title: 'Сравненительный анализ',
     content: TheComparison,
   },
 ];
 
 onMounted(() => {
-  lessonsStore.fetchLessons()
+  lessonsStore.fetchLessons();
 });
 
-const lessons = computed(() => lessonsStore.lessons)
+const lessons = computed(() => lessonsStore.lessons);
 
-watch(() => lessonsStore.selectedLesson, (selectedLesson) => {
-  if (selectedLesson) {
-    graphsStore.fetchGraphs(selectedLesson);
+watch(
+  () => lessonsStore.selectedLesson,
+  (selectedLesson) => {
+    if (selectedLesson) {
+      graphsStore.fetchGraphs(selectedLesson);
+    }
   }
-});
-
+);
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

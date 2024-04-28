@@ -7,19 +7,23 @@ export const useGraphsStore = defineStore('graphs', {
     currentGraphs: {} as GraphsDto,
     isFetching: true as Boolean,
     activeGraphsCount: 0 as number,
+    popularSentiment: '' as string,
+    summary:
+      'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua' as string,
   }),
   actions: {
     async fetchGraphs(lesson: string) {
-        try {
-            this.isFetching = true;
-            this.currentGraphs = (await http.graphs.get(lesson)).data;
-        } catch (error) {
-            console.error('Error fetching graphs:', error);
-        }
-        finally {
-            this.isFetching = false;
-        }
-        
+      try {
+        this.isFetching = true;
+        this.currentGraphs = (await http.graphs.get(lesson)).data;
+      } catch (error) {
+        console.error('Error fetching graphs:', error);
+      } finally {
+        this.isFetching = false;
+      }
+    },
+    async setPopularSentiment(sentiment: string) {
+      this.popularSentiment = sentiment;
     },
   },
 });
